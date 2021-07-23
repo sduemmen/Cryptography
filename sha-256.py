@@ -114,7 +114,9 @@ class SHA256:
         messageBlocks = []
         for i in range(0, len(int32_array), 16):
             messageBlocks.append(int32_array[i:i+16])
-
+        
+        print(messageBlocks)
+        print(int32_array)
         # expanding message schedule
         for messageSchedule in messageBlocks:
             for _ in range(48):
@@ -157,3 +159,4 @@ class SHA256:
 
 
 print(SHA256.hash("abc"))
+print(SHA256.hash("abcbihsabfapbgzhwgzsaovfsahfbv"))
