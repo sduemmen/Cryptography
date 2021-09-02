@@ -1,3 +1,3 @@
-# Secure-Hashing-Algorithms
+# Cryptography
 
 - Hashing and Cryptography Algorithms
