@@ -13,56 +13,65 @@ workingVariables = np.array([0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x5
 
 MAX_WORD_LENGTH = 32
 
-def ADD(*args):
+def ADD(*args) -> int:
     result = 0
     for x in args:
         result += x
     return (result % 2**MAX_WORD_LENGTH)
     
-def complement(x):
+def complement(x: int) -> int:
     return ((2**(MAX_WORD_LENGTH)-1) - x)
 
-def XOR(*args):
+def XOR(*args) -> int:
     result = 0
     for x in args:
         result ^= x
     return (result % 2**MAX_WORD_LENGTH)
 
-def SHR(x, shamt):
+def SHR(x: int, shamt: int) -> int:
     return x >> shamt
 
-def ROTR(x, ramt):
+def ROTR(x: int, ramt: int) -> int:
     return x >> ramt | x << (MAX_WORD_LENGTH - ramt) & 2**MAX_WORD_LENGTH-1
 
-def CH(x, y, z):
+def CH(x: int, y: int, z: int) -> int:
     return x & y | complement(x) & z
 
-def MAJ(x, y, z):
+def MAJ(x: int, y: int, z: int) -> int:
     return x & y | x & z | y & z
 
-def SIGMA_0(x):
+def SIGMA_0(x: int) -> int:
     return XOR(ROTR(x, 7), ROTR(x, 18), SHR(x, 3))
 
-def SIGMA_1(x):
+def SIGMA_1(x: int) -> int:
     return XOR(ROTR(x, 17), ROTR(x, 19), SHR(x, 10))
 
-def sigma_0(x):
+def sigma_0(x: int) -> int:
     return XOR(ROTR(x, 2), ROTR(x, 13), ROTR(x, 22))
 
-def sigma_1(x):
+def sigma_1(x: int) -> int:
     return XOR(ROTR(x, 6), ROTR(x, 11), ROTR(x, 25))
 
 def toHex(n: int) -> str:
     return hex(n)[2:]
 
-def hash(message, encoding='utf-8', readFile=False) -> str:
+def hash(message='', encoding='utf-8', readFile=False, fileName='') -> str:
     # H0 holds the current state while compressing whereas H1 holds the state at the start of each compression step
     global K, workingVariables
     H0 = np.copy(workingVariables)
     H1 = np.copy(workingVariables)
 
-    # constructing bytearray from message with specified encoding
-    byteArray = bytearray(message, encoding)
+    # constructing bytearray from message or file with specified encoding
+    if readFile:
+        try:
+            with open(fileName, 'rb') as f:
+                byteArray = bytearray(f.read())
+        except IOError:
+            print(f'Something went wrong while trying to read file {fileName}')
+            return
+    else:
+        byteArray = bytearray(message, encoding)
+        
     byteArrayLength = len(byteArray)*8
 
     # adding 1 bit seperator
@@ -115,4 +124,5 @@ def hash(message, encoding='utf-8', readFile=False) -> str:
         finalHash += toHex(value)
     return finalHash
     
-print(hash('abcdefghijklmnopqabcdefghijklmnopqabcdefghijklmnopqabcdefghijklmnopqabcdefghijklmnopqa'))
+print(hash('abc'))
+print(hash(readFile=True, fileName='test.txt'))
