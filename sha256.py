@@ -55,14 +55,14 @@ def sigma_1(x: int) -> int:
 def toHex(n: int) -> str:
     return hex(n)[2:]
 
-def hash(message='', encoding='utf-8', readFile=False, fileName='') -> str:
+def hash(message='', encoding='utf-8', fileName='') -> str:
     # H0 holds the current state while compressing whereas H1 holds the state at the start of each compression step
     global K, workingVariables
     H0 = np.copy(workingVariables)
     H1 = np.copy(workingVariables)
 
     # constructing bytearray from message or file with specified encoding
-    if readFile:
+    if fileName:
         try:
             with open(fileName, 'rb') as f:
                 byteArray = bytearray(f.read())
@@ -124,5 +124,6 @@ def hash(message='', encoding='utf-8', readFile=False, fileName='') -> str:
         finalHash += toHex(value)
     return finalHash
     
-print(hash('abc'))
-print(hash(readFile=True, fileName='test.txt'))
+if __name__ == '__main__':
+    print(hash('abc'))
+    print(hash(fileName='test.txt'))
